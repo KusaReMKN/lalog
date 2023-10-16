@@ -1,0 +1,19 @@
+{
+  "name": "lalog",
+  "version": "0.0.0",
+  "description": "Load Average Logging",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KusaReMKN/lalog.git"
+  },
+  "author": "KusaReMKN",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/KusaReMKN/lalog/issues"
+  },
+  "homepage": "https://github.com/KusaReMKN/lalog#readme"
+}
