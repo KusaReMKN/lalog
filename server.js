@@ -29,7 +29,7 @@ app.post('/', (req, res) =>
 
 app.get('/:hostname', (req, res) =>
     db.all(`SELECT logTime, loadavg1, loadavg5, loadavg15
-                FROM lalogs JOIN hosts WHERE hostName IS ?;`,
+                FROM lalogs JOIN hosts USING ( hostId ) WHERE hostName IS ?;`,
         req.params.hostname, function (err, rows) {
             if (err) {
                 res.status(500)
