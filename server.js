@@ -27,10 +27,23 @@ app.post('/', (req, res) =>
         .json({ error: 'Method Not Allowed' })
 );
 
-app.get('/:hostname', (req, res) =>
+app.get('/:hostname', (req, res) => {
+    const until = req.query.until ? new Date(req.query.until) : new Date();
+    const since = new Date(req.query.since || until.getTime() - 3600000);
+    // the format of date/time used in SQLite is 'YYYY-MM-DD hh:mm:ss' in UTC.
+    const SQLiteDatetime = d => d.toISOString().split(/[TZ]|\.\d*/).join(' ');
+    if (until.toString() === 'Invalid Date'
+        || since.toString() === 'Invalid Date') {
+        res.status(422)
+            .json({ error: 'Invalid Date' });
+        return;
+    }
     db.all(`SELECT logTime, loadavg1, loadavg5, loadavg15
-                FROM lalogs JOIN hosts USING ( hostId ) WHERE hostName IS ?;`,
-        req.params.hostname, function (err, rows) {
+                FROM lalogs JOIN hosts USING ( hostId )
+                WHERE hostName IS ? AND logTime BETWEEN ? AND ?
+                ORDER BY logTime;`,
+        req.params.hostname, SQLiteDatetime(since), SQLiteDatetime(until),
+        function (err, rows) {
             if (err) {
                 res.status(500)
                     .json({ error: err });
@@ -48,8 +61,8 @@ app.get('/:hostname', (req, res) =>
             }));
             res.json(result);
         }
-    )
-);
+    );
+});
 app.post('/:hostname', (req, res) => {
     if (!/^application\/json;?/.test(req.get('Content-Type'))) {
         res.status(415)
