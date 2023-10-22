@@ -49,11 +49,6 @@ app.get('/:hostname', (req, res) => {
                     .json({ error: err });
                 return;
             }
-            if (rows.length === 0) {
-                res.status(404)
-                    .json({ error: 'Unknown Host' });
-                return;
-            }
             const result = {};
             result[req.params.hostname] = rows.map(e => ({
                 datetime: e.logTime,
